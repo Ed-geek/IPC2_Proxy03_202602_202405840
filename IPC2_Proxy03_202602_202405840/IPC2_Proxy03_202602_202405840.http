@@ -1,0 +1,6 @@
+@IPC2_Proxy03_202602_202405840_HostAddress = http://localhost:5138
+
+GET {{IPC2_Proxy03_202602_202405840_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

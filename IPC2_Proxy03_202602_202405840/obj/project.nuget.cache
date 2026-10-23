@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "dgSpecHash": "fDegw0PLxyDC1U46q94U0Fv9RtX6GyZtXPVgh9xWTrfL5/Eu+MgLN/J5iROKJlz/l2OxoStOCAa48JMrhaMM+A==",
+  "success": true,
+  "projectFilePath": "/home/eduardo/Documentos/Usac/SEMESTRE/Semestre6/LAB-IPC2/PROYECTOS/IPC2_Proy03_202602_202405840/IPC2_Proxy03_202602_202405840/IPC2_Proxy03_202602_202405840.csproj",
+  "expectedPackageFiles": [
+    "/home/eduardo/.nuget/packages/microsoft.aspnetcore.openapi/8.0.32/microsoft.aspnetcore.openapi.8.0.32.nupkg.sha512",
+    "/home/eduardo/.nuget/packages/microsoft.extensions.apidescription.server/8.0.0/microsoft.extensions.apidescription.server.8.0.0.nupkg.sha512",
+    "/home/eduardo/.nuget/packages/microsoft.openapi/2.7.5/microsoft.openapi.2.7.5.nupkg.sha512",
+    "/home/eduardo/.nuget/packages/swashbuckle.aspnetcore/10.3.1/swashbuckle.aspnetcore.10.3.1.nupkg.sha512",
+    "/home/eduardo/.nuget/packages/swashbuckle.aspnetcore.swagger/10.3.1/swashbuckle.aspnetcore.swagger.10.3.1.nupkg.sha512",
+    "/home/eduardo/.nuget/packages/swashbuckle.aspnetcore.swaggergen/10.3.1/swashbuckle.aspnetcore.swaggergen.10.3.1.nupkg.sha512",
+    "/home/eduardo/.nuget/packages/swashbuckle.aspnetcore.swaggerui/10.3.1/swashbuckle.aspnetcore.swaggerui.10.3.1.nupkg.sha512",
+    "/home/eduardo/.nuget/packages/system.text.json/8.0.5/system.text.json.8.0.5.nupkg.sha512"
+  ],
+  "logs": []
+}
