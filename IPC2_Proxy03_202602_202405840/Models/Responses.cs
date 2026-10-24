@@ -17,17 +17,20 @@ public class AutorizacionResponse
 
 public class ResultadoAutorizaciones
 {
-    [JsonPropertyName("cantidadAutorizacionesAprobadas")]
-    public int CantidadAprobadas { get; set; }
+    // Los 4 campos
+    [JsonPropertyName("cantidadAutorizacionesAprobadas")]                              public int CantidadAprobadas { get; set; }
+    [JsonPropertyName("cantidadAutorizacionesRechazadasPorNitEmisorInexistente")]      public int RechazadasNitEmisor { get; set; }
+    [JsonPropertyName("cantidadAutorizacionesRechazadasPorNitReceptorInexistente")]    public int RechazadasNitReceptor { get; set; }
+    [JsonPropertyName("detalleAprobaciones")]                                          public List<DetalleAprobacion> Detalle { get; set; } = new();
 
-    [JsonPropertyName("cantidadAutorizacionesRechazadasPorNitEmisorInexistente")]
-    public int RechazadasNitEmisor { get; set; }
-
-    [JsonPropertyName("cantidadAutorizacionesRechazadasPorNitReceptorInexistente")]
-    public int RechazadasNitReceptor { get; set; }
-
-    [JsonPropertyName("detalleAprobaciones")]
-    public List<DetalleAprobacion> Detalle { get; set; } = new();
+    // Campos adicionales esperados
+    [JsonPropertyName("cantidadAutorizacionesRechazadasPorNitEmisorInvalido")]         public int RechazadasNitEmisorInvalido { get; set; }
+    [JsonPropertyName("cantidadAutorizacionesRechazadasPorNitReceptorInvalido")]       public int RechazadasNitReceptorInvalido { get; set; }
+    [JsonPropertyName("cantidadAutorizacionesRechazadasPorIvaMalCalculado")]           public int RechazadasIva { get; set; }
+    [JsonPropertyName("cantidadAutorizacionesRechazadasPorTotalMalCalculado")]         public int RechazadasTotal { get; set; }
+    [JsonPropertyName("cantidadAutorizacionesRechazadasPorReferenciaDuplicada")]       public int RechazadasReferencia { get; set; }
+    [JsonPropertyName("cantidadAutorizacionesRechazadas")]                             public int CantidadRechazadas { get; set; }
+    [JsonPropertyName("cantidadDescartadasPorFormato")]                                public int Descartadas { get; set; }
 }
 
 public class DetalleAprobacion

@@ -15,7 +15,6 @@ public class DteService
         var refsAprobadas = facturas.Where(f => f.EsValida).Select(f => f.Referencia).ToHashSet();
         var resp = new AutorizacionResponse();
 
-        // Uso del TDA propio: procesamos en orden FIFO
         var cola = new LinkedQueue<FacturaRequest>();
         foreach (var r in requests) cola.Enqueue(r);
 
@@ -25,58 +24,87 @@ public class DteService
             var f = new Factura
             {
                 Referencia  = req.Referencia ?? "",
-                NitEmisor   = (req.NitEmisor   ?? "").Trim().ToUpper(),
+                NitEmisor   = (req.NitEmisor ?? "").Trim().ToUpper(),
                 NitReceptor = (req.NitReceptor ?? "").Trim().ToUpper(),
                 Valor       = req.Valor,
                 Iva         = req.Iva,
                 Total       = req.Total
             };
 
-            // 1) Fecha con Regex (ignora "Guatemala, ... hrs.")
+            // Fecha (Regex)
             try { f.Fecha = RegexExtractor.ExtraerFecha(req.Tiempo); }
-            catch { f.Errores.Add("Fecha inválida"); }
+            catch
+            {
+                f.DescartadaPorFormato = true;
+                f.Errores.Add("Fecha inválida");
+                resp.Resultado.Descartadas++;
+                facturas.Add(f);
+                continue;   // No procesar más: sin fecha no hay nada que validar
+            }
 
-            // 2) REFERENCIA válida (máx 40 posiciones)
             if (string.IsNullOrWhiteSpace(f.Referencia) || f.Referencia.Length > 40)
                 f.Errores.Add("REFERENCIA inválida");
 
-            // 3) VALOR real positivo
             if (f.Valor <= 0) f.Errores.Add("VALOR inválido");
 
-            // 4) NIT emisor
+            // NIT emisor
             bool emisorFormato = NitValidator.EsNitValido(f.NitEmisor);
             bool emisorExiste  = emisorFormato && rtuNits.Contains(f.NitEmisor);
-            bool recEmisorInexistente = false;
-            if (!emisorFormato) f.Errores.Add("NIT emisor inválido");
-            else if (!emisorExiste) { f.Errores.Add("NIT emisor inexistente"); recEmisorInexistente = true; }
+            if (!emisorFormato)
+            {
+                f.Errores.Add("NIT emisor inválido");
+                resp.Resultado.RechazadasNitEmisorInvalido++;
+            }
+            else if (!emisorExiste)
+            {
+                f.Errores.Add("NIT emisor inexistente");
+                resp.Resultado.RechazadasNitEmisor++;
+            }
 
-            // 5) NIT receptor
+            // NIT receptor
             bool receptorFormato = NitValidator.EsNitValido(f.NitReceptor);
             bool receptorExiste  = receptorFormato && rtuNits.Contains(f.NitReceptor);
-            bool recReceptorInexistente = false;
-            if (!receptorFormato) f.Errores.Add("NIT receptor inválido");
-            else if (!receptorExiste) { f.Errores.Add("NIT receptor inexistente"); recReceptorInexistente = true; }
+            if (!receptorFormato)
+            {
+                f.Errores.Add("NIT receptor inválido");
+                resp.Resultado.RechazadasNitReceptorInvalido++;
+            }
+            else if (!receptorExiste)
+            {
+                f.Errores.Add("NIT receptor inexistente");
+                resp.Resultado.RechazadasNitReceptor++;
+            }
 
-            // 6) IVA
+            // IVA
             decimal ivaEsperado = Math.Round(f.Valor * 0.12m, 2, MidpointRounding.AwayFromZero);
-            if (f.Iva != ivaEsperado) f.Errores.Add("IVA mal calculado");
+            if (f.Iva != ivaEsperado)
+            {
+                f.Errores.Add("IVA mal calculado");
+                resp.Resultado.RechazadasIva++;
+            }
 
-            // 7) TOTAL
-            if (f.Total != f.Valor + f.Iva) f.Errores.Add("TOTAL mal calculado");
+            // TOTAL
+            if (f.Total != f.Valor + f.Iva)
+            {
+                f.Errores.Add("TOTAL mal calculado");
+                resp.Resultado.RechazadasTotal++;
+            }
 
-            // 8) REFERENCIA duplicada (solo contra aprobadas)
-            if (f.Errores.Count == 0 && refsAprobadas.Contains(f.Referencia))
+            // REFERENCIA duplicada (solo contra aprobadas en BD o procesadas antes en este mensaje)
+            if (refsAprobadas.Contains(f.Referencia))
+            {
                 f.Errores.Add("REFERENCIA duplicada");
+                resp.Resultado.RechazadasReferencia++;
+            }
 
-            // 9) Autorizar si no hay errores
+            // Autorizar
             if (f.Errores.Count == 0)
             {
                 f.EsValida = true;
-                long correl = _db.ObtenerSiguienteCorrelativo(f.Fecha);
-
-                // El PDF muestra un código de 16 dígitos (ej. 2026092100000001).
-                // Usamos D8 para reproducir el ejemplo exacto del enunciado.
-                f.CodigoAprobacion = $"{f.Fecha:yyyyMMdd}{correl:D8}";
+                // Importante: código de aprobación usa la fecha de HOY (del sistema)
+                var ahora = DateTime.Now;
+                long correl = _db.ObtenerSiguienteCorrelativo(ahora);
+                f.CodigoAprobacion = $"{ahora:yyyyMMdd}{correl:D8}";
 
                 refsAprobadas.Add(f.Referencia);
                 resp.Resultado.CantidadAprobadas++;
@@ -88,11 +116,10 @@ public class DteService
             }
             else
             {
-                if (recEmisorInexistente)   resp.Resultado.RechazadasNitEmisor++;
-                if (recReceptorInexistente) resp.Resultado.RechazadasNitReceptor++;
+                resp.Resultado.CantidadRechazadas++;
             }
 
-            facturas.Add(f); // Guardamos TODAS (válidas e inválidas) para el reporte
+            facturas.Add(f);
         }
 
         _db.GuardarFacturas(facturas);

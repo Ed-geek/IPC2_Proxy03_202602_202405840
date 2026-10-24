@@ -11,5 +11,6 @@ public class Factura
     public DateTime Fecha { get; set; }
     public string CodigoAprobacion { get; set; } = "";
     public bool EsValida { get; set; }
+    public bool DescartadaPorFormato { get; set; }   
     public List<string> Errores { get; set; } = new();
 }
