@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="../buildMultiTargeting/IPC2_Proxy03_202602_202405840.props" />
+</Project>

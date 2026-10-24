@@ -1,0 +1,16 @@
+@page
+@model EnviarMensajeModel
+@{ ViewData["Title"] = "Enviar Mensaje"; }
+<h2>Enviar JSON al Servicio</h2>
+
+<form method="post" enctype="multipart/form-data">
+    <label>Archivo .json (RTU o DTE):</label>
+    <input type="file" asp-for="Archivo" accept=".json" required />
+    <button type="submit">Enviar</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.Respuesta))
+{
+    <h3>Respuesta del API:</h3>
+    <pre class="json-box">@Model.Respuesta</pre>
+}

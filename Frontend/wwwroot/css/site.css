@@ -1,0 +1,43 @@
+* { box-sizing: border-box; }
+body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #f4f6f8; color: #222; }
+
+header { background: #1c3d5a; color: #fff; padding: 1rem 2rem; }
+header h1 { margin: 0 0 .5rem; font-size: 1.3rem; }
+header nav { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+header nav a { color: #cde; text-decoration: none; font-size: .95rem; }
+header nav a:hover { color: #fff; text-decoration: underline; }
+header nav button {
+    background: #c33; color: #fff; border: none; padding: .4rem .8rem;
+    border-radius: 4px; cursor: pointer; margin-left: auto;
+}
+header nav button:hover { background: #a00; }
+
+main { padding: 2rem; max-width: 1100px; margin: 0 auto; }
+h2 { color: #1c3d5a; }
+
+form { background: #fff; padding: 1rem 1.5rem; border-radius: 6px;
+       box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-bottom: 1.5rem; }
+form label { display: inline-block; margin: .4rem .4rem .4rem 0; font-weight: 600; }
+input, select { padding: .4rem .6rem; margin: 0 .6rem .4rem 0; border: 1px solid #ccc;
+                border-radius: 4px; font-size: .95rem; }
+button[type=submit] { background: #1c3d5a; color: #fff; border: none;
+                      padding: .5rem 1rem; border-radius: 4px; cursor: pointer; }
+button[type=submit]:hover { background: #132c42; }
+
+.json-box { background: #222; color: #9f9; padding: 1rem; overflow-x: auto;
+            border-radius: 6px; font-size: .85rem; line-height: 1.4; }
+
+.tabla { border-collapse: collapse; background: #fff; }
+.tabla th, .tabla td { border: 1px solid #ccc; padding: .5rem 1rem; text-align: left; }
+.tabla th { background: #e8eef4; }
+
+canvas { background: #fff; border-radius: 6px; margin: 1rem 0; padding: .5rem; }
+
+@media print {
+    header, nav, button, form { display: none !important; }
+    body { background: #fff; }
+    main { padding: 0; max-width: none; }
+    .json-box { background: #fff; color: #000; border: 1px solid #333;
+                font-size: 10px; page-break-inside: avoid; }
+    canvas { page-break-inside: avoid; }
+}

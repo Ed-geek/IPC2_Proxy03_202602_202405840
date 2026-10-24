@@ -1,0 +1,16 @@
+@page
+@model ReporteRangoModel
+@{ ViewData["Title"] = "Reporte Rango"; }
+<h2>Reporte Completo por Rango de Fechas</h2>
+
+<form method="post">
+    <label>Inicio:</label> <input asp-for="Inicio" type="date" required />
+    <label>Fin:</label>    <input asp-for="Fin" type="date" required />
+    <button type="submit">Generar Reporte</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.Resultado))
+{
+    <pre class="json-box">@Model.Resultado</pre>
+    <button onclick="window.print()">📄 Exportar a PDF</button>
+}

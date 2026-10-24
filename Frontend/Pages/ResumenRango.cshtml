@@ -1,0 +1,31 @@
+@page
+@model ResumenRangoModel
+@{ ViewData["Title"] = "Resumen Rango"; }
+<h2>Resumen por Rango de Fechas</h2>
+
+<form method="post">
+    <label>Inicio:</label> <input asp-for="Inicio" type="date" required />
+    <label>Fin:</label>    <input asp-for="Fin" type="date" required />
+    <button type="submit">Consultar</button>
+</form>
+
+@if (!string.IsNullOrEmpty(Model.Resultado))
+{
+    <pre class="json-box">@Model.Resultado</pre>
+    <canvas id="chart" width="700" height="320"></canvas>
+    <button onclick="window.print()">📄 Exportar a PDF</button>
+
+    <script>
+        const data = @Html.Raw(Model.GraphJson);
+        new Chart(document.getElementById('chart'), {
+            type: 'bar',
+            data: {
+                labels: data.map(x => x.nit),
+                datasets: [
+                    { label: 'IVA Emitido',  data: data.map(x => x.ivaEmitido),  backgroundColor: 'rgba(54,162,235,0.7)' },
+                    { label: 'IVA Recibido', data: data.map(x => x.ivaRecibido), backgroundColor: 'rgba(255,99,132,0.7)' }
+                ]
+            }
+        });
+    </script>
+}
